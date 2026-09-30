@@ -6,8 +6,8 @@ import java.awt.Graphics;
  * TEACHER-PROVIDED FRAMEWORK CODE.
  *
  * GameWorld stores three named Ducks, draws scenery and objects in layers,
- * and coordinates the Dog. Students should not edit this file for the core
- * assignment.
+ * and coordinates the Dog. Added Ducks appear when the game starts.
+ * Students should not edit this file for the core assignment.
  */
 public class GameWorld {
     public static final int WORLD_WIDTH = 900;
@@ -17,7 +17,7 @@ public class GameWorld {
     private Duck duck1;
     private Duck duck2;
     private Duck duck3;
-    private Duck currentDuck;
+    private Duck duckToRetrieve;
     private Dog dog;
     private Background background = new Background();
     private Foreground foreground = new Foreground();
@@ -44,9 +44,14 @@ public class GameWorld {
     }
 
     public void start() {
-        currentDuck = duck1;
-        if (currentDuck != null) {
-            currentDuck.activate();
+        if (duck1 != null) {
+            duck1.activate();
+        }
+        if (duck2 != null) {
+            duck2.activate();
+        }
+        if (duck3 != null) {
+            duck3.activate();
         }
     }
 
@@ -68,14 +73,20 @@ public class GameWorld {
 
         dog.update();
 
-        if (currentDuck != null && currentDuck.hasLanded()
+        if (duckToRetrieve != null && duckToRetrieve.hasLanded()
                 && !dog.isRetrieving() && !dog.hasRetrievedDuck()) {
-            dog.startRetrieving(currentDuck.getX());
+            dog.startRetrieving(duckToRetrieve.getX());
         }
 
-        if (currentDuck != null && dog.hasRetrievedDuck()) {
-            currentDuck.deactivate();
-            activateNextDuck();
+        if (duckToRetrieve != null && dog.hasRetrievedDuck()) {
+            duckToRetrieve.deactivate();
+            duckToRetrieve = null;
+            dog.reset();
+
+            if (allDucksRetrieved()) {
+                finished = true;
+                won = true;
+            }
         }
     }
 
@@ -118,13 +129,22 @@ public class GameWorld {
             return;
         }
 
-        if (currentDuck == null || currentDuck.isFalling()
-                || dog.isRetrieving()) {
+        if (duckToRetrieve != null) {
             return;
         }
 
-        if (currentDuck.wasClicked(mouseX, mouseY)) {
-            currentDuck.startFalling();
+        Duck clickedDuck = null;
+        if (duck1 != null && duck1.wasClicked(mouseX, mouseY)) {
+            clickedDuck = duck1;
+        } else if (duck2 != null && duck2.wasClicked(mouseX, mouseY)) {
+            clickedDuck = duck2;
+        } else if (duck3 != null && duck3.wasClicked(mouseX, mouseY)) {
+            clickedDuck = duck3;
+        }
+
+        if (clickedDuck != null) {
+            clickedDuck.startFalling();
+            duckToRetrieve = clickedDuck;
         } else {
             stars = stars - 1;
 
@@ -135,22 +155,9 @@ public class GameWorld {
         }
     }
 
-    private void activateNextDuck() {
-        dog.reset();
-        if (currentDuck == duck1) {
-            currentDuck = duck2;
-        } else if (currentDuck == duck2) {
-            currentDuck = duck3;
-        } else {
-            currentDuck = null;
-        }
-
-        if (currentDuck == null) {
-            finished = true;
-            won = true;
-            return;
-        }
-
-        currentDuck.activate();
+    private boolean allDucksRetrieved() {
+        return (duck1 == null || !duck1.isActive())
+                && (duck2 == null || !duck2.isActive())
+                && (duck3 == null || !duck3.isActive());
     }
 }

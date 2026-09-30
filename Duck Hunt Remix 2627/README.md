@@ -56,7 +56,7 @@ student files.
 
 - `Frame` creates the window, starts the timer, and declares the Duck objects.
 - `GameWorld` stores `duck1`, `duck2`, and `duck3`. It calls each Duck's
-  `update()` and `paint()` methods, and manages stars, the Dog, and the next Duck.
+  `update()` and `paint()` methods, and manages stars and the Dog.
 - `Duck` controls movement, bouncing, falling, and resetting.
 - `Dog` moves toward the fallen Duck and reports when retrieval is complete.
 - `Background`, `Foreground`, `Tree`, and `Bush` draw scenery. They are
@@ -83,7 +83,7 @@ You should see:
 - A game window
 - The background and ground
 - A tree and bushes
-- One Duck
+- One Duck in the untouched starter, or two if you already enabled `duck2`
 - A Dog at the bottom
 - A stars/lives display
 
@@ -131,10 +131,10 @@ Run the game and check that:
 
 ## Step 4: Check resetting
 
-Read `Duck.reset()`. `activate()` calls it when that Duck's turn begins.
-Run the game again and check that the first Duck appears at its starting
-position. Later, when you add the second and third Ducks, check that each
-one starts at the position you gave it in `Frame.java`.
+Read `Duck.reset()`. `activate()` calls it when the game starts. Run the game
+again and check that the first Duck appears at its starting position. Later,
+when you add the second and third Ducks, check that each one starts at the
+position you gave it in `Frame.java`.
 
 ## Step 5: Make the Dog retrieve the Duck
 
@@ -148,8 +148,9 @@ Use `if` statements to:
 - Set `retrievedDuck` to `true` when the Dog arrives.
 - Set `retrieving` to `false` when the retrieval is complete.
 
-Run the game after each change. The next Duck will not activate until the Dog
-reports that the retrieval is complete.
+Run the game after each change. The Duck you click should disappear only
+after the Dog reaches it. Once you add more Ducks, the others stay visible
+while the Dog retrieves one.
 
 ## Step 6: Add more Duck objects
 
@@ -167,8 +168,14 @@ world.addDuck(duck2);
 world.addDuck(duck3);
 ```
 
-Run the game. The Ducks should become active one at a time after the Dog
-retrieves the previous Duck.
+Run the game immediately after adding `duck2`. You should see two Ducks on
+screen at the same time. Add `duck3`, run again, and check for three. They
+should each appear at the starting position you chose in `Frame.java`.
+
+If you still see one Duck, confirm that you uncommented **both** the
+`private Duck duck2 = ...` line and the `world.addDuck(duck2);` line. Also
+confirm that the two Ducks are not starting at the same position. The Dog
+does not need to be finished for the second Duck to appear.
 
 `GameWorld` has a separate field for each of the three Ducks. Read its
 `update()` and `paint()` methods to see the direct calls for `duck1`, `duck2`,
@@ -292,8 +299,9 @@ larger or smaller; the `Sprite` class scales it to the numbers in the code.
 - **The Dog changes to a blank picture:** check both Dog filenames. The first
   name is used at the start; the second name is used during retrieval.
 - **The new Duck never appears:** check that you declared it and also called
-  `world.addDuck(...)` in `Frame.java`. The Ducks appear one at a time after
-  the Dog retrieves the previous one. This starter supports three Ducks.
+  `world.addDuck(...)` in `Frame.java`, above `world.start()`. Give each Duck
+  a different starting position. Added Ducks appear when the game opens,
+  even if the Dog code is unfinished. This starter supports three Ducks.
 
 ## Extension ideas
 
